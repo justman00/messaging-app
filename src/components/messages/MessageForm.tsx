@@ -11,7 +11,7 @@ const MessageForm: React.FC<Props> = props => {
     setContent(e.target.value)
   }
 
-  const handleSubmit = (e: React.KeyboardEvent<HTMLSelectElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     props.onAddMessage(content)
