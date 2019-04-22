@@ -1,14 +1,11 @@
 import React from 'react'
+import { MessageInt } from './Messages'
 
-interface Props {
-  id: string
-}
-
-const Message: React.FC<Props> = props => {
-  console.log(props)
+const Message: React.FC<MessageInt> = props => {
   return (
     <div>
-      <h1>Hi</h1>
+      <h4>{props.user.name}</h4>
+      <p>{props.messageInput}</p>
     </div>
   )
 }

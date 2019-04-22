@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { firestore } from '../../firebase'
 import Message from './Message'
+import MessageForm from './MessageForm'
 
 interface User {
   uid: string
   name: string
 }
 
-interface MessageInt {
+export interface MessageInt {
   id: string
   messageInput: string
   user: User
@@ -16,21 +17,24 @@ interface MessageInt {
 interface State {
   messages: MessageInt[]
   currentUser: User
+  heys: string[]
+}
+
+const localState: State = {
+  messages: [],
+  currentUser: {
+    uid: '1',
+    name: 'Vlad'
+  },
+  heys: []
 }
 
 class Messages extends Component<{}, State> {
-  state = {
-    messageInput: '',
-    messages: [],
-    currentUser: {
-      uid: '1',
-      name: 'Vlad'
-    }
-  }
+  state = localState
 
   unsubscribeFromFirestore = (): void => {}
 
-  public changeUser = (bool: boolean) => {
+  changeUser = (bool: boolean) => {
     let user: User
 
     if (bool) {
@@ -48,6 +52,15 @@ class Messages extends Component<{}, State> {
     this.setState({ currentUser: user })
   }
 
+  onAddMessage = (content: string) => {
+    const msg = {
+      messageInput: content,
+      user: this.state.currentUser
+    }
+
+    firestore.collection('messages').add(msg)
+  }
+
   componentDidMount = () => {
     this.unsubscribeFromFirestore = firestore
       .collection('messages')
@@ -62,7 +75,6 @@ class Messages extends Component<{}, State> {
         })
         console.log(messages)
         this.setState({ messages })
-        return
       })
   }
 
@@ -71,12 +83,16 @@ class Messages extends Component<{}, State> {
   }
 
   render() {
+    console.log(this.state.currentUser.name)
     return (
       <div>
         <h1>Your conversation</h1>
+        <button onClick={() => this.changeUser(true)}>Write as Alex</button>
+        <button onClick={() => this.changeUser(false)}>Write as Vlad</button>
         {this.state.messages.map(msg => (
           <Message {...msg} key={msg.id} />
         ))}
+        <MessageForm onAddMessage={this.onAddMessage} />
       </div>
     )
   }
