@@ -2,7 +2,7 @@ import firebase from 'firebase'
 import 'firebase/firestore'
 
 const config = {
-  apiKey: 'AIzaSyA71g35CU20xtCoUQLwD9Gc3-ngbRQsUWU',
+  apiKey: process.env.FIREBASE_KEY,
   authDomain: 'messaging-app-vlad.firebaseapp.com',
   databaseURL: 'https://messaging-app-vlad.firebaseio.com',
   projectId: 'messaging-app-vlad',

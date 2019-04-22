@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 import { firestore } from '../../firebase'
-
-interface Message {
-  id: string
-  messageInput: string
-  user: User
-}
+import Message from './Message'
 
 interface User {
   uid: string
   name: string
 }
 
-interface State {
+interface MessageInt {
+  id: string
   messageInput: string
-  messages: Message[]
+  user: User
+}
+
+interface State {
+  messages: MessageInt[]
   currentUser: User
 }
 
@@ -52,11 +52,17 @@ class Messages extends Component<{}, State> {
     this.unsubscribeFromFirestore = firestore
       .collection('messages')
       .onSnapshot(snap => {
-        const messages = snap.docs.map(doc => {
-          return { id: doc.id, ...doc.data() }
+        const messages: MessageInt[] = snap.docs.map(doc => {
+          const data = doc.data()
+
+          const user: User = data.user
+          const messageInput: string = data.messageInput
+
+          return { id: doc.id, user, messageInput }
         })
         console.log(messages)
-        // this.setState({ messages })
+        this.setState({ messages })
+        return
       })
   }
 
@@ -68,6 +74,9 @@ class Messages extends Component<{}, State> {
     return (
       <div>
         <h1>Your conversation</h1>
+        {this.state.messages.map(msg => (
+          <Message {...msg} key={msg.id} />
+        ))}
       </div>
     )
   }
